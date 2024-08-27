@@ -1,6 +1,6 @@
-
 streamlit==1.26.0
 pandas==1.5.3
 plotly==5.15.0
 requests==2.31.0
 matplotlib==3.7.1
+Pillow==8.4.0  # 이전 버전 Pillow 설치
