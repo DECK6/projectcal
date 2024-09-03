@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.figure_factory as ff
-import plotly.graph_objs as go  # 추가된 라이브러리
+import plotly.graph_objs as go
 import requests
 import io
 from datetime import datetime, timedelta
@@ -50,7 +50,7 @@ def parse_date(date_str):
         if date_part:
             return pd.to_datetime(date_part.group()) - timedelta(days=1)
     
-    if '행사' in date_str:
+    if '행사'에 date_str:
         date_part = re.search(r'\d{4}\.\d{2}\.\d{2}', date_str)
         if date_part:
             return pd.to_datetime(date_part.group().replace('.', '-'))
@@ -153,7 +153,7 @@ if not df.empty:
                 # 디데이 텍스트를 바 끝에 추가
                 annotations.append(dict(
                     x=row[end_date_col].strftime('%Y-%m-%d'),
-                    y=index,
+                    y=index + 0.5,  # 각 바의 중간에 위치하도록 조정
                     text=d_day_text,
                     showarrow=False,
                     xanchor='left',
