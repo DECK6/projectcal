@@ -156,17 +156,19 @@ if not df.empty:
             )
 
             # 디데이 계산 및 텍스트 추가
-            for index, row in df.iterrows():
-                d_day = (row[end_date_col] - datetime.now()).days
+            for i, task in enumerate(tasks):
+                end_date = pd.to_datetime(task['Finish'])
+                d_day = (end_date - datetime.now()).days
                 d_day_text = f"D-{d_day}" if d_day >= 0 else f"D+{-d_day}"
                 
                 # 각 프로젝트 바 끝에 디데이 텍스트 추가
                 fig.add_trace(go.Scatter(
-                    x=[row[end_date_col].strftime('%Y-%m-%d')],
-                    y=[index],  # y 위치를 데이터의 인덱스로 설정
+                    x=[task['Finish']],
+                    y=[i],  # y 위치를 각 바의 인덱스(i)로 설정
                     text=[d_day_text],
                     mode="text",
-                    textposition="middle right"
+                    textposition="middle right",
+                    showlegend=False
                 ))
 
             # 높이 설정
