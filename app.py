@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.figure_factory as ff
+import plotly.graph_objs as go  # 추가된 라이브러리
 import requests
 import io
 from datetime import datetime, timedelta
@@ -135,6 +136,7 @@ if not df.empty:
             colors = generate_colors(len(unique_managers))
 
             tasks = []
+            annotations = []  # 각 바 끝에 추가할 디데이 텍스트를 저장할 리스트
             for index, row in df.iterrows():
                 task = dict(
                     Task=row[business_name_col],
@@ -143,6 +145,20 @@ if not df.empty:
                     Resource=row[manager_col]
                 )
                 tasks.append(task)
+
+                # 디데이 계산
+                d_day = (row[end_date_col] - datetime.now()).days
+                d_day_text = f"D-{d_day}" if d_day >= 0 else f"D+{-d_day}"
+
+                # 디데이 텍스트를 바 끝에 추가
+                annotations.append(dict(
+                    x=row[end_date_col].strftime('%Y-%m-%d'),
+                    y=index,
+                    text=d_day_text,
+                    showarrow=False,
+                    xanchor='left',
+                    font=dict(color='black', size=10)
+                ))
 
             fig = ff.create_gantt(
                 tasks, 
@@ -156,7 +172,8 @@ if not df.empty:
 
             # 높이 설정
             fig.update_layout(
-                height=40 * len(tasks)  # 각 항목에 대한 높이 설정 (항목당 40 픽셀)
+                height=40 * len(tasks),  # 각 항목에 대한 높이 설정 (항목당 40 픽셀)
+                annotations=annotations  # 디데이 텍스트 추가
             )
 
             # 가로축을 하루 단위로 설정
