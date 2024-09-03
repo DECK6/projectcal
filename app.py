@@ -136,7 +136,6 @@ if not df.empty:
             colors = generate_colors(len(unique_managers))
 
             tasks = []
-            annotations = []  # 각 바 끝에 추가할 디데이 텍스트를 저장할 리스트
             for index, row in df.iterrows():
                 task = dict(
                     Task=row[business_name_col],
@@ -145,20 +144,6 @@ if not df.empty:
                     Resource=row[manager_col]
                 )
                 tasks.append(task)
-
-                # 디데이 계산
-                d_day = (row[end_date_col] - datetime.now()).days
-                d_day_text = f"D-{d_day}" if d_day >= 0 else f"D+{-d_day}"
-
-                # 디데이 텍스트를 바 끝에 추가
-                annotations.append(dict(
-                    x=row[end_date_col].strftime('%Y-%m-%d'),
-                    y=index + 0.5,  # 각 바의 중간에 위치하도록 조정
-                    text=d_day_text,
-                    showarrow=False,
-                    xanchor='left',
-                    font=dict(color='black', size=10)
-                ))
 
             fig = ff.create_gantt(
                 tasks, 
@@ -170,10 +155,23 @@ if not df.empty:
                 colors=colors
             )
 
+            # 디데이 계산 및 텍스트 추가
+            for index, row in df.iterrows():
+                d_day = (row[end_date_col] - datetime.now()).days
+                d_day_text = f"D-{d_day}" if d_day >= 0 else f"D+{-d_day}"
+                
+                # 각 프로젝트 바 끝에 디데이 텍스트 추가
+                fig.add_trace(go.Scatter(
+                    x=[row[end_date_col].strftime('%Y-%m-%d')],
+                    y=[index],  # y 위치를 데이터의 인덱스로 설정
+                    text=[d_day_text],
+                    mode="text",
+                    textposition="middle right"
+                ))
+
             # 높이 설정
             fig.update_layout(
-                height=40 * len(tasks),  # 각 항목에 대한 높이 설정 (항목당 40 픽셀)
-                annotations=annotations  # 디데이 텍스트 추가
+                height=40 * len(tasks)  # 각 항목에 대한 높이 설정 (항목당 40 픽셀)
             )
 
             # 가로축을 하루 단위로 설정
