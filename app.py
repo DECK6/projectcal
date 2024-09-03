@@ -50,7 +50,7 @@ def parse_date(date_str):
         if date_part:
             return pd.to_datetime(date_part.group()) - timedelta(days=1)
     
-    if '행사'에 date_str:
+    if '행사' in date_str:
         date_part = re.search(r'\d{4}\.\d{2}\.\d{2}', date_str)
         if date_part:
             return pd.to_datetime(date_part.group().replace('.', '-'))
