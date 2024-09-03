@@ -164,7 +164,7 @@ if not df.empty:
                 # 각 프로젝트 바 끝에 디데이 텍스트 추가
                 fig.add_trace(go.Scatter(
                     x=[task['Finish']],
-                    y=[i],  # y 위치를 각 바의 인덱스(i)로 설정
+                    y=[len(tasks) - 1 - i],  # y 위치를 뒤집어서 설정
                     text=[d_day_text],
                     mode="text",
                     textposition="middle right",
